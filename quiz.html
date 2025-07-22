@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="quiz-style.css" />
+</head>
+
+<body>
+  <!-- Banner at the top -->
+  <div class="banner-container">
+    <img src="images/banner.png" alt="Quiz Banner" class="banner-image" />
+  </div>
+
+  <!-- Main Quiz Container -->
+  <div id="quiz-container" class="quiz-page">
+      <div id="timer" style="float: left; font-size: 1rem; color: orange; margin-right: 20px;">00:00:00</div>
+      <h1>Select any one option</h1>
+    <p id="user-info"></p>
+    
+    <!-- File input for Excel file upload -->
+    <label for="fileUpload" class="file-upload-label">Upload Quiz File</label>
+    <input type="file" id="fileUpload" accept=".xlsx" onchange="loadExcelFile(event)" class="file-upload-input" />
+
+    <!-- Container to display the quiz questions -->
+    <div id="mcq-question-container" class="question-container" style="display:none;">
+      <h3 id="question-title" class="question-title"></h3>
+      <div id="question-options" class="options-container"></div>
+      <img id="question-image" class="question-image" style="display:none;" />
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="button-group">
+        <button id="nextButton" class="btn" style="display:none;" onclick="nextQuestion(); ">Next</button>
+      <button id="submitButton" class="btn" style="display:none;" onclick="submitQuiz()">Submit</button>
+    </div>
+
+    <!-- Results container -->
+    <div id="results-container" class="results-container" style="display:none;">
+      <h3>Your Results</h3>
+      <div id="results"></div>
+      <button id="saveButton" class="btn" onclick="saveResults()">Save Results</button>
+    </div>
+  </div>
+
+  <!-- Script imports -->
+  <script src="lib/xlsx.full.min.js"></script>
+  <script src="quiz.js"></script>
+  <script src="timer.js" defer></script>
+  <script>
+    // Display the username stored in session storage
+    const username = sessionStorage.getItem('username');
+    if (username) {
+      document.getElementById('user-info').innerText = `Logged in as: ${username}`;
+    } else {
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
+
+

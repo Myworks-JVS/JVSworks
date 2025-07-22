@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="login-style.css">
+  <script src="quiz.js" defer></script>
+</head>
+<body>
+  <!-- Banner Image at the Top -->
+  <div class="banner-container">
+    <img src="images/banner.png" alt="Quiz Banner" class="banner-image">
+  </div>
+
+  <!-- Login Container -->
+  <div id="login-container">
+    <h1>Login to Start the Quiz</h1>
+    <label for="username">Username:</label>
+    <input type="text" id="username" placeholder="Enter Username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Enter Password" required>
+
+    <button id="loginButton" onclick="login();">Login</button>
+
+    <p id="error-message" style="color: red; display: none;">Invalid username or password. Please try again.</p>
+  </div>
+
+  <!-- Login Function -->
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const validPassword = 'password123';
+
+      if (password === validPassword) {
+        sessionStorage.setItem('username', username);
+        window.location.href = 'quiz.html';
+      } else {
+        document.getElementById('error-message').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
+
