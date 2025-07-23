@@ -1,5 +1,6 @@
 function openContent(url) {
-    window.open(url, '_blank');
+    const newTab = window.open(url, '_blank', 'noopener,noreferrer');
+    if (newTab) newTab.opener = null;
 }
 
 let questions = [];
@@ -40,14 +41,27 @@ document.getElementById('fileUpload').addEventListener('change', loadExcelFile);
 
 function parseExcelData(excelData) {
     questions = [];
+    let invalidRows = 0;
 
     excelData.forEach((row, index) => {
-        if (index === 0) return;
+        if (index === 0) return; // Skip header row
+
+        // ✅ Validate: must be an array with at least 7 elements
+        if (!Array.isArray(row) || row.length < 7) {
+            invalidRows++;
+            return;
+        }
+
+        const correctIndexInOriginal = parseInt(row[6]);
+        if (isNaN(correctIndexInOriginal) || correctIndexInOriginal < 0 || correctIndexInOriginal > 3) {
+            invalidRows++;
+            return;
+        }
 
         const options = [row[2], row[3], row[4], row[5]];
         shuffleArray(options);
 
-        const correctOption = row[2 + parseInt(row[6])];
+        const correctOption = row[2 + correctIndexInOriginal];
         const shuffledCorrectIndex = options.indexOf(correctOption);
 
         const question = {
@@ -57,9 +71,16 @@ function parseExcelData(excelData) {
             correct: shuffledCorrectIndex,
             image: row[7] || null
         };
+
         questions.push(question);
     });
+
+    // ✅ Alert if no valid questions loaded
+    if (invalidRows > 0) {
+        alert(`${invalidRows} invalid rows were skipped while loading questions.`);
+    }
 }
+
 
 
 function loadQuestion(index) {
