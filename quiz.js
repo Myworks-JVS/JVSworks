@@ -86,7 +86,7 @@ function parseExcelData(excelData) {
 function loadQuestion(index) {
     const questionTitle = document.getElementById('question-title');
     const questionOptions = document.getElementById('question-options');
-    const questionImage = document.getElementById('question-image');
+ 
 
     const currentQuestion = questions[index];
     questionTitle.innerHTML = `${currentQuestion.topic}: ${currentQuestion.question}`;
@@ -101,13 +101,6 @@ function loadQuestion(index) {
         questionOptions.appendChild(optionLabel);
         questionOptions.appendChild(document.createElement('br'));
     });
-
-    if (currentQuestion.image) {
-        questionImage.src = currentQuestion.image;
-        questionImage.style.display = 'block';
-    } else {
-        questionImage.style.display = 'none';
-    }
 
     document.getElementById('submitButton').style.display = (index === questions.length - 1) ? 'block' : 'none';
     document.getElementById('nextButton').style.display = (index === questions.length - 1) ? 'none' : 'block';
