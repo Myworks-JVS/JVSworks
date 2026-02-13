@@ -7,14 +7,12 @@ let questions = [];
 let currentQuestionIndex = 0;
 let userResponses = [];
 
-
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
-
 
 function loadExcelFile(event) {
     const file = event.target.files[0];
@@ -38,21 +36,21 @@ function loadExcelFile(event) {
 
 document.getElementById('fileUpload').addEventListener('change', loadExcelFile);
 
-
 function parseExcelData(excelData) {
     questions = [];
     let invalidRows = 0;
 
     excelData.forEach((row, index) => {
-        if (index === 0) return; // Skip header row
+        if (index === 0) return;
 
-        // ✅ Validate: must be an array with at least 7 elements
         if (!Array.isArray(row) || row.length < 7) {
             invalidRows++;
             return;
         }
 
-        const correctIndexInOriginal = parseInt(row[6]);
+        // ✅ Excel correct option should now be 1–4
+        const correctIndexInOriginal = parseInt(row[6]) - 1;
+
         if (isNaN(correctIndexInOriginal) || correctIndexInOriginal < 0 || correctIndexInOriginal > 3) {
             invalidRows++;
             return;
@@ -75,18 +73,14 @@ function parseExcelData(excelData) {
         questions.push(question);
     });
 
-    // ✅ Alert if no valid questions loaded
     if (invalidRows > 0) {
         alert(`${invalidRows} invalid rows were skipped while loading questions.`);
     }
 }
 
-
-
 function loadQuestion(index) {
     const questionTitle = document.getElementById('question-title');
     const questionOptions = document.getElementById('question-options');
- 
 
     const currentQuestion = questions[index];
     questionTitle.innerHTML = `${currentQuestion.topic}: ${currentQuestion.question}`;
@@ -95,17 +89,19 @@ function loadQuestion(index) {
     currentQuestion.options.forEach((option, optIndex) => {
         const optionLabel = document.createElement('label');
         optionLabel.innerHTML = `
-            <input type="radio" name="question" value="${optIndex}">
+            <input type="radio" name="question" value="${optIndex + 1}">
             ${option}
         `;
         questionOptions.appendChild(optionLabel);
         questionOptions.appendChild(document.createElement('br'));
     });
 
-    document.getElementById('submitButton').style.display = (index === questions.length - 1) ? 'block' : 'none';
-    document.getElementById('nextButton').style.display = (index === questions.length - 1) ? 'none' : 'block';
-}
+    document.getElementById('submitButton').style.display =
+        (index === questions.length - 1) ? 'block' : 'none';
 
+    document.getElementById('nextButton').style.display =
+        (index === questions.length - 1) ? 'none' : 'block';
+}
 
 function nextQuestion() {
     const selectedOption = document.querySelector('input[name="question"]:checked');
@@ -113,15 +109,17 @@ function nextQuestion() {
         alert("Please select an answer before moving to the next question!");
         return;
     }
-    userResponses[currentQuestionIndex] = parseInt(selectedOption.value);
+
+    // ✅ Convert back to zero-based internally
+    userResponses[currentQuestionIndex] = parseInt(selectedOption.value) - 1;
+
     currentQuestionIndex++;
-    
+
     if (currentQuestionIndex < questions.length) {
         loadQuestion(currentQuestionIndex);
     }
     startTimer();
 }
-
 
 function submitQuiz() {
     const selectedOption = document.querySelector('input[name="question"]:checked');
@@ -129,44 +127,42 @@ function submitQuiz() {
         alert("Please select an answer before submitting!");
         return;
     }
-    
-    userResponses[currentQuestionIndex] = parseInt(selectedOption.value);
+
+    // ✅ Convert back to zero-based internally
+    userResponses[currentQuestionIndex] = parseInt(selectedOption.value) - 1;
+
     displayResults();
     stopTimer();
 }
 
-
 function displayResults() {
-const resultsContainer = document.getElementById('results-container');
-const resultsDiv = document.getElementById('results');
-resultsDiv.innerHTML = ''; // Clear previous results
+    const resultsContainer = document.getElementById('results-container');
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
 
-let correctAnswers = 0;
+    let correctAnswers = 0;
 
-questions.forEach((q, index) => {
-const userAnswer = userResponses[index];
-if (userAnswer === q.correct) correctAnswers++;
-});
+    questions.forEach((q, index) => {
+        const userAnswer = userResponses[index];
+        if (userAnswer === q.correct) correctAnswers++;
+    });
 
-const totalQuestions = questions.length;
-const wrongAnswers = totalQuestions - correctAnswers;
-const score = (correctAnswers / totalQuestions) * 100;
+    const totalQuestions = questions.length;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    const score = (correctAnswers / totalQuestions) * 100;
 
+    document.getElementById('mcq-question-container').style.display = 'none';
 
-document.getElementById('mcq-question-container').style.display = 'none';
+    resultsDiv.innerHTML += `<p style="color: green;">Correct Answers: ${correctAnswers}</p>`;
+    resultsDiv.innerHTML += `<p style="color: red;">Wrong Answers: ${wrongAnswers}</p>`;
+    resultsDiv.innerHTML += `<h3>Your Score: ${score.toFixed(2)}%</h3>`;
 
-// Display result summary
-resultsDiv.innerHTML += `<p style="color: green;">Correct Answers: ${correctAnswers}</p>`;
-resultsDiv.innerHTML += `<p style="color: red;">Wrong Answers: ${wrongAnswers}</p>`;
-resultsDiv.innerHTML += `<h3>Your Score: ${score.toFixed(2)}%</h3>`;
+    if (score === 100) {
+        resultsDiv.innerHTML += `<p style="color: darkblue; font-weight: bold;">🎉 Congratulations! You scored 100%!</p>`;
+    }
 
-// ✅ Display congratulations message if 100%
-if (score === 100) {
-resultsDiv.innerHTML += `<p style="color: darkblue; font-weight: bold;">🎉 Congratulations! You scored 100%!</p>`;
-}
-
-resultsContainer.style.display = 'block'; // Show results
-document.getElementById('submitButton').style.display = 'none'; // Hide submit button
+    resultsContainer.style.display = 'block';
+    document.getElementById('submitButton').style.display = 'none';
 }
 
 
