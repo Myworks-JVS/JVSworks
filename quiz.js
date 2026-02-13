@@ -28,10 +28,10 @@ function shuffleArray(array) {
 // ==============================
 function loadExcelFile(event) {
     const file = event.target.files[0];
-
     if (!file) return;
 
-    if (!file.name.endsWith(".xlsx")) {
+    // Case-insensitive .xlsx check
+    if (!file.name.toLowerCase().endsWith(".xlsx")) {
         alert("Please upload a valid .xlsx file.");
         return;
     }
@@ -40,29 +40,27 @@ function loadExcelFile(event) {
 
     reader.onload = function (e) {
         try {
-            const data = new Uint8Array(e.target.result);
-
             if (typeof XLSX === "undefined") {
                 alert("XLSX library not loaded!");
                 return;
             }
 
+            const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: "array" });
 
-            if (!workbook.SheetNames.length) {
+            if (!workbook.SheetNames || !workbook.SheetNames.length) {
                 alert("No sheets found in Excel file.");
                 return;
             }
 
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
             const excelData = XLSX.utils.sheet_to_json(worksheet, {
                 header: 1,
                 defval: ""
             });
 
-            if (!excelData.length) {
+            if (!excelData || !excelData.length) {
                 alert("Excel file is empty.");
                 return;
             }
@@ -70,20 +68,21 @@ function loadExcelFile(event) {
             parseExcelData(excelData);
 
             if (!questions.length) {
-                alert("No valid questions found.");
+                alert("No valid questions found. Please check Excel format.");
                 return;
             }
 
             document.getElementById("fileUpload").style.display = "none";
-            document.querySelector(".file-upload-label").style.display = "none";
+            const label = document.querySelector(".file-upload-label");
+            if (label) label.style.display = "none";
 
             loadQuestion(0);
 
             document.getElementById("mcq-question-container").style.display = "block";
             document.getElementById("nextButton").style.display = "block";
 
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
             alert("Error reading Excel file.");
         }
     };
@@ -96,12 +95,8 @@ document.getElementById("fileUpload")
 
 // ==============================
 // PARSE EXCEL DATA
-// Expected Columns:
-// 0: Topic
-// 1: Question
-// 2-5: Options
-// 6: Correct Option (1-4)
-// 7: Image (optional)
+// Columns:
+// 0 Topic | 1 Question | 2–5 Options | 6 Correct | 7 Image (optional)
 // ==============================
 function parseExcelData(excelData) {
     questions = [];
@@ -110,58 +105,60 @@ function parseExcelData(excelData) {
 
     let invalidRows = 0;
 
-    excelData.forEach((row, index) => {
+    excelData.forEach((row) => {
 
-        if (index === 0) return; // Skip header
+        // Skip empty rows
+        if (!row || row.every(cell => String(cell).trim() === "")) return;
 
-        if (!Array.isArray(row) || row.length < 7) {
-            invalidRows++;
-            return;
-        }
-
-        const topic = String(row[0]).trim();
-        const questionText = String(row[1]).trim();
+        const topic = String(row[0] || "").trim();
+        const questionText = String(row[1] || "").trim();
 
         const options = [
-            String(row[2]).trim(),
-            String(row[3]).trim(),
-            String(row[4]).trim(),
-            String(row[5]).trim()
+            String(row[2] || "").trim(),
+            String(row[3] || "").trim(),
+            String(row[4] || "").trim(),
+            String(row[5] || "").trim()
         ];
 
-        const correctFromExcel = parseInt(row[6]);
+        let correctRaw = String(row[6] || "").trim();
+        let correctIndex = null;
 
-        // Validate correct option (must be 1-4)
+        // Normalize correct answer formats
+        if (/^[1-4]$/.test(correctRaw)) {
+            correctIndex = parseInt(correctRaw, 10) - 1;
+        } else if (/^[A-Da-d]$/.test(correctRaw)) {
+            correctIndex = correctRaw.toUpperCase().charCodeAt(0) - 65;
+        } else if (/option\s*[1-4]/i.test(correctRaw)) {
+            correctIndex = parseInt(correctRaw.match(/[1-4]/)[0], 10) - 1;
+        }
+
         if (
             !topic ||
             !questionText ||
             options.some(opt => !opt) ||
-            isNaN(correctFromExcel) ||
-            correctFromExcel < 1 ||
-            correctFromExcel > 4
+            correctIndex === null
         ) {
             invalidRows++;
             return;
         }
 
-        const correctIndexOriginal = correctFromExcel - 1;
-        const correctAnswerText = options[correctIndexOriginal];
+        const correctAnswerText = options[correctIndex];
 
         shuffleArray(options);
 
         const shuffledCorrectIndex = options.indexOf(correctAnswerText);
 
         questions.push({
-            topic: topic,
+            topic,
             question: questionText,
-            options: options,
+            options,
             correct: shuffledCorrectIndex,
             image: row[7] ? String(row[7]).trim() : null
         });
     });
 
     if (invalidRows > 0) {
-        alert(`${invalidRows} invalid rows were skipped.`);
+        alert(`${invalidRows} rows were skipped due to formatting issues.`);
     }
 }
 
@@ -205,7 +202,7 @@ function nextQuestion() {
         return;
     }
 
-    userResponses[currentQuestionIndex] = parseInt(selected.value);
+    userResponses[currentQuestionIndex] = parseInt(selected.value, 10);
     currentQuestionIndex++;
 
     if (currentQuestionIndex < questions.length) {
@@ -224,8 +221,7 @@ function submitQuiz() {
         return;
     }
 
-    userResponses[currentQuestionIndex] = parseInt(selected.value);
-
+    userResponses[currentQuestionIndex] = parseInt(selected.value, 10);
     displayResults();
 }
 
@@ -233,7 +229,6 @@ function submitQuiz() {
 // DISPLAY RESULTS
 // ==============================
 function displayResults() {
-
     const resultsContainer = document.getElementById("results-container");
     const resultsDiv = document.getElementById("results");
 
@@ -255,7 +250,7 @@ function displayResults() {
         <h3>Score: ${score}%</h3>
     `;
 
-    if (score == 100) {
+    if (Number(score) === 100) {
         resultsDiv.innerHTML += `
             <p style="color:darkblue;font-weight:bold;">
                 🎉 Congratulations! Perfect Score!
@@ -270,7 +265,6 @@ function displayResults() {
 // SAVE RESULTS
 // ==============================
 function saveResults() {
-
     const total = questions.length;
     const correct = userResponses.filter(
         (ans, i) => ans === questions[i].correct
@@ -309,4 +303,3 @@ Correct Answer: ${q.options[q.correct]}
     link.download = `quiz_results_${Date.now()}.txt`;
     link.click();
 }
-
