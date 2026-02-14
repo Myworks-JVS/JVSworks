@@ -1,3 +1,115 @@
+.template-preview-container {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fafafa;
+    box-sizing: border-box;
+}
+
+.template-preview-frame {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.template-preview-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Mobile tightening */
+@media (max-width: 600px) {
+    .template-preview-container {
+        padding: 10px;
+    }
+}
+
+/* ===============================
+   FILE BUTTON GROUP
+   =============================== */
+
+.file-section {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* hide real file input */
+.file-upload-input {
+  display: none;
+}
+
+/* ===============================
+   COLOR VARIANTS (same styling)
+   =============================== */
+
+/* Upload → Green */
+.upload-btn {
+  background: #16a34a;
+}
+
+.upload-btn:hover {
+  background: #15803d;
+}
+
+/* Download → Indigo */
+.template-btn {
+  background: #7c3aed;
+}
+
+.template-btn:hover {
+  background: #5b21b6;
+}
+
+/* ===============================
+   LOGIN BUTTON (inherits system)
+   =============================== */
+
+.login-btn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* ===============================
+   FILE UPLOAD SYSTEM
+   =============================== */
+
+/* hide real file input */
+.file-upload-input {
+  display: none;
+}
+
+/* styled upload button */
+.file-upload-label {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.file-upload-label:hover {
+  background: #1e40af;
+}
+
+/* spacing for template link */
+#downloadTemplateBtn {
+  margin-left: 10px;
+}
+
 /* login-style.css */
 
 body {
@@ -55,16 +167,6 @@ input {
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-button {
-  padding: 10px;
-  width: 100%;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 button:hover {
