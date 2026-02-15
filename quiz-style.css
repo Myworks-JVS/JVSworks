@@ -87,6 +87,9 @@ input {
   border-radius: 8px;
   font-weight: 600;
 }
+h1 {
+    color: red;
+}
 
 /* =================================
    OPTIONS
