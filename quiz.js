@@ -84,46 +84,66 @@ function loadExcelFile(event) {
 // Accepts extra columns like image URL
 // ==============================
 function parseExcelData(rows) {
+questions = [];
+currentQuestionIndex = 0;
+userResponses = [];
 
-    questions = [];
-    currentQuestionIndex = 0;
-    userResponses = [];
+if (!rows || rows.length === 0) return;
 
-    if (!rows || rows.length === 0) return;
+let startRow = 0;
 
-    let startRow = 0;
+if (String(rows[0][0]).toLowerCase().includes("question"))
+    startRow = 1;
 
-    if (String(rows[0][0]).toLowerCase().includes("question"))
-        startRow = 1;
+for (let i = startRow; i < rows.length; i++) {
 
-    for (let i = startRow; i < rows.length; i++) {
+    const r = rows[i];
 
-        const r = rows[i];
+    const question = String(r[0] || "").trim();
 
-        const question = String(r[0] || "").trim();
-        const options = [
-            String(r[1] || "").trim(),
-            String(r[2] || "").trim(),
-            String(r[3] || "").trim(),
-            String(r[4] || "").trim()
-        ];
+    const options = [
+        String(r[1] || "").trim(),
+        String(r[2] || "").trim(),
+        String(r[3] || "").trim(),
+        String(r[4] || "").trim()
+    ];
 
-        const correctIndex = parseInt(r[5], 10) - 1;
+    // NEW LOGIC: accept A,B,C,D (case insensitive)
+    const correctRaw = String(r[5] || "").trim().toLowerCase();
 
-        if (!question) continue;
-        if (options.some(o => !o)) continue;
-        if (isNaN(correctIndex) || correctIndex < 0 || correctIndex > 3) continue;
+    let correctIndex;
 
-        const correctText = options[correctIndex];
-
-        shuffleArray(options);
-
-        questions.push({
-            question: question,
-            options: options,
-            correct: options.indexOf(correctText)
-        });
+    switch (correctRaw) {
+        case "a":
+            correctIndex = 0;
+            break;
+        case "b":
+            correctIndex = 1;
+            break;
+        case "c":
+            correctIndex = 2;
+            break;
+        case "d":
+            correctIndex = 3;
+            break;
+        default:
+            continue;
     }
+
+    if (!question) continue;
+    if (options.some(o => !o)) continue;
+
+    const correctText = options[correctIndex];
+
+    shuffleArray(options);
+
+    questions.push({
+        question: question,
+        options: options,
+        correct: options.indexOf(correctText)
+    });
+}
+
 }
 
 // ==============================
