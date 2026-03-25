@@ -150,7 +150,8 @@ for (let i = startRow; i < rows.length; i++) {
 // LOAD QUESTION
 // ==============================
 function loadQuestion(index) {
-    startTimer()
+    startTimer();
+
     const q = questions[index];
 
     document.getElementById("question-title").textContent =
@@ -171,6 +172,7 @@ function loadQuestion(index) {
         container.appendChild(row);
     });
 
+    // 🔹 Restore previous answer
     if (userResponses[index] !== undefined) {
         const selected = document.querySelector(
             `input[value="${userResponses[index]}"]`
@@ -178,22 +180,40 @@ function loadQuestion(index) {
         if (selected) selected.checked = true;
     }
 
-    document.getElementById("submitButton").style.display =
+    // 🔹 BUTTON CONTROL (NEW)
+    const nextBtn = document.getElementById("nextButton");
+    const submitBtn = document.getElementById("submitButton");
+
+    // Disable both initially
+    nextBtn.disabled = true;
+    submitBtn.disabled = true;
+
+    // Enable if already answered
+    if (userResponses[index] !== undefined) {
+        nextBtn.disabled = false;
+        submitBtn.disabled = false;
+    }
+
+    // 🔹 Listen for selection
+    container.querySelectorAll('input[name="question"]').forEach(input => {
+        input.addEventListener("change", () => {
+            nextBtn.disabled = false;
+            submitBtn.disabled = false;
+        });
+    });
+
+    // Existing visibility logic
+    submitBtn.style.display =
         index === questions.length - 1 ? "block" : "none";
 
-    document.getElementById("nextButton").style.display =
+    nextBtn.style.display =
         index === questions.length - 1 ? "none" : "block";
 }
-
 // ==============================
 // NEXT
 // ==============================
 function nextQuestion() {
     const selected = document.querySelector('input[name="question"]:checked');
-    if (!selected) {
-        alert("Select an answer.");
-        return;
-    }
 
     userResponses[currentQuestionIndex] = Number(selected.value);
     currentQuestionIndex++;
@@ -205,15 +225,10 @@ function nextQuestion() {
 // ==============================
 function submitQuiz() {
     const selected = document.querySelector('input[name="question"]:checked');
-    if (!selected) {
-        alert("Select an answer.");
-        return;
-    }
 
     userResponses[currentQuestionIndex] = Number(selected.value);
     displayResults();
 }
-
 // ==============================
 // RESULTS
 // ==============================

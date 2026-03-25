@@ -26,7 +26,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 6px 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .banner-image {
@@ -44,10 +44,9 @@ body {
   margin: 30px auto;
   padding: 24px;
   background-color: #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
 }
-
 
 input {
   width: 100%;
@@ -68,7 +67,7 @@ input {
   padding: 28px 24px;
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 /* =================================
@@ -83,8 +82,9 @@ input {
   border-radius: 8px;
   font-weight: 600;
 }
+
 h1 {
-    color: red;
+  color: red;
 }
 
 /* =================================
@@ -108,7 +108,7 @@ h1 {
   background: #f8f9ff;
   border: 1px solid #e3e6ff;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .option-row:hover {
@@ -119,6 +119,12 @@ h1 {
   margin: 2px 0 0 0;
   transform: scale(1.05);
   cursor: pointer;
+}
+
+/* ✅ Selected option highlight (NEW) */
+.option-row input[type="radio"]:checked + .option-text {
+  font-weight: 600;
+  color: #2563eb;
 }
 
 .option-text {
@@ -166,7 +172,7 @@ h1 {
 }
 
 /* =================================
-   BUTTON SYSTEM (FIXED)
+   BUTTON SYSTEM
    ================================= */
 
 .btn {
@@ -180,20 +186,29 @@ h1 {
   text-align: center;
   text-decoration: none;
   color: white;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
   min-width: 120px;
 }
 
+/* Active press */
 .btn:active {
   transform: scale(0.97);
 }
 
-/* Default Blue Buttons (Next, Submit, Save) */
+/* ✅ DISABLED STATE (IMPORTANT UPDATE) */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  pointer-events: none;
+}
+
+/* Default Blue Buttons */
 .btn:not(.upload-btn):not(.template-btn) {
   background: #2563eb;
 }
 
-.btn:not(.upload-btn):not(.template-btn):hover {
+.btn:not(.upload-btn):not(.template-btn):hover:not(:disabled) {
   background: #1e40af;
 }
 
@@ -202,20 +217,20 @@ h1 {
   background: #16a34a;
 }
 
-.upload-btn:hover {
+.upload-btn:hover:not(:disabled) {
   background: #15803d;
 }
 
-/* Download Template Button */
+/* Template Button */
 .template-btn {
   background: #7c3aed;
 }
 
-.template-btn:hover {
+.template-btn:hover:not(:disabled) {
   background: #5b21b6;
 }
 
-/* Login button full width */
+/* Login full width */
 .login-btn {
   width: 100%;
   margin-top: 12px;
