@@ -281,14 +281,7 @@ function updateRemainingCount() {
 
     // Bar update (safe check)
     if (barEl) {
-    barEl.style.width = `${progressPercent}%`;
-
-    if (progressPercent < 40) {
-        barEl.style.background = "#ff6b6b"; // red
-    } else if (progressPercent < 75) {
-        barEl.style.background = "#f7b731"; // amber
-    } else {
-        barEl.style.background = "#20bf6b"; // green
+        barEl.style.width = `${progressPercent}%`;
     }
 }
 
