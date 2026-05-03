@@ -63,7 +63,9 @@ function loadExcelFile(event) {
                 alert("No valid questions found in file.");
                 return;
             }
-
+            // ADD HERE progress bar
+            const progressWrapper = document.getElementById("progress-wrapper");
+            if (progressWrapper) progressWrapper.style.display = "block";
             document.querySelector(".file-section").style.display = "none";
             document.getElementById("mcq-question-container").style.display = "block";
             document.getElementById("nextButton").style.display = "block";
@@ -262,13 +264,34 @@ function displayResults() {
 // REMAINING QUESTION COUNTER
 // ==============================
 function updateRemainingCount() {
-    const el = document.getElementById("question-progress");
-    if (!el) return; // safety (won't break anything)
+    const textEl = document.getElementById("question-progress");
+    const barEl = document.getElementById("progress-bar");
 
-    const remaining = questions.length - currentQuestionIndex;
+    if (!textEl) return; // safety
 
-    el.innerText = `Questions Remaining: ${remaining}`;
+    const total = questions.length || 1; // avoid divide by zero
+    const remaining = total - currentQuestionIndex;
+    const completed = currentQuestionIndex;
+
+    // Text update (existing behavior)
+    textEl.innerText = `Questions Remaining: ${remaining}`;
+
+    // Progress % (completed portion)
+    const progressPercent = (completed / total) * 100;
+
+    // Bar update (safe check)
+    if (barEl) {
+    barEl.style.width = `${progressPercent}%`;
+
+    if (progressPercent < 40) {
+        barEl.style.background = "#ff6b6b"; // red
+    } else if (progressPercent < 75) {
+        barEl.style.background = "#f7b731"; // amber
+    } else {
+        barEl.style.background = "#20bf6b"; // green
+    }
 }
+
 // ==============================
 // SAVE RESULTS
 // ==============================
