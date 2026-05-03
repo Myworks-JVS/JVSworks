@@ -86,6 +86,7 @@ h1 {
     </div>
 
     <!-- ===== QUESTION AREA ===== -->
+    <p id="question-progress" style="font-weight:600; margin-top:10px;"></p>
     <div id="mcq-question-container" class="question-container" style="display:none;">
         <h3 id="question-title" class="question-title"></h3>
         <div id="question-options" class="options-container"></div>
@@ -93,10 +94,10 @@ h1 {
 
     <!-- ===== NAV BUTTONS ===== -->
     <div class="button-group">
-        <!-- ✅ Disabled by default (IMPORTANT CHANGE) -->
+        <!--  Disabled by default (IMPORTANT CHANGE) -->
         <button id="nextButton" class="btn" style="display:none;" disabled onclick="nextQuestion()">Next</button>
 
-        <!-- ✅ Disabled by default -->
+        <!-- Disabled by default -->
         <button id="submitButton" class="btn" style="display:none;" disabled onclick="submitQuiz()">Submit</button>
     </div>
 
@@ -116,38 +117,6 @@ h1 {
 </footer>
 
 <!-- ================= SCRIPT ================= -->
-<script>
-const loginContainer = document.getElementById("login-container");
-const quizContainer = document.getElementById("quiz-container");
-const loginButton = document.getElementById("loginButton");
-const usernameInput = document.getElementById("username");
-const errorMessage = document.getElementById("error-message");
-const userInfo = document.getElementById("user-info");
-
-/* ---------- LOGIN BUTTON ---------- */
-loginButton.addEventListener("click", () => {
-    const username = usernameInput.value.trim();
-
-    if (username === "") {
-        errorMessage.style.display = "block";
-        return;
-    }
-
-    startQuiz(username);
-});
-
-/* ---------- START QUIZ ---------- */
-function startQuiz(username) {
-    loginContainer.classList.add("hidden");
-    quizContainer.classList.remove("hidden");
-    userInfo.innerText = "Logged in as: " + username;
-}
-
-/* ---------- OPTIONAL LOGOUT ---------- */
-function logout() {
-    location.reload();
-}
-</script>
 
 </body>
 </html>
