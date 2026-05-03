@@ -143,7 +143,7 @@ for (let i = startRow; i < rows.length; i++) {
         correct: options.indexOf(correctText)
     });
 }
-
+    updateRemainingCount(); // ✅ initialize counter
 }
 
 // ==============================
@@ -172,7 +172,7 @@ function loadQuestion(index) {
         container.appendChild(row);
     });
 
-    // 🔹 Restore previous answer
+    //  Restore previous answer
     if (userResponses[index] !== undefined) {
         const selected = document.querySelector(
             `input[value="${userResponses[index]}"]`
@@ -180,7 +180,7 @@ function loadQuestion(index) {
         if (selected) selected.checked = true;
     }
 
-    // 🔹 BUTTON CONTROL (NEW)
+    //  BUTTON CONTROL (NEW)
     const nextBtn = document.getElementById("nextButton");
     const submitBtn = document.getElementById("submitButton");
 
@@ -194,7 +194,7 @@ function loadQuestion(index) {
         submitBtn.disabled = false;
     }
 
-    // 🔹 Listen for selection
+    //  Listen for selection
     container.querySelectorAll('input[name="question"]').forEach(input => {
         input.addEventListener("change", () => {
             nextBtn.disabled = false;
@@ -208,15 +208,17 @@ function loadQuestion(index) {
 
     nextBtn.style.display =
         index === questions.length - 1 ? "none" : "block";
+    updateRemainingCount(); // ✅ ADD HERE
 }
 // ==============================
 // NEXT
 // ==============================
 function nextQuestion() {
     const selected = document.querySelector('input[name="question"]:checked');
-
+    if (!selected) return; // ✅ safety
     userResponses[currentQuestionIndex] = Number(selected.value);
     currentQuestionIndex++;
+    updateRemainingCount(); // ✅ update immediately on click
     loadQuestion(currentQuestionIndex);
 }
 
@@ -225,8 +227,10 @@ function nextQuestion() {
 // ==============================
 function submitQuiz() {
     const selected = document.querySelector('input[name="question"]:checked');
-
+    if (!selected) return; // ✅ safety
     userResponses[currentQuestionIndex] = Number(selected.value);
+    currentQuestionIndex = questions.length; // ✅ ensures 0 remaining
+    updateRemainingCount();
     displayResults();
 }
 // ==============================
@@ -254,7 +258,17 @@ function displayResults() {
 
     document.getElementById("results-container").style.display = "block";
 }
+// ==============================
+// REMAINING QUESTION COUNTER
+// ==============================
+function updateRemainingCount() {
+    const el = document.getElementById("question-progress");
+    if (!el) return; // safety (won't break anything)
 
+    const remaining = questions.length - currentQuestionIndex;
+
+    el.innerText = `Questions Remaining: ${remaining}`;
+}
 // ==============================
 // SAVE RESULTS
 // ==============================
@@ -266,13 +280,15 @@ function saveResults() {
 
     const wrong = total - correct;
     const percentage = ((correct / total) * 100).toFixed(2);
-
+    // ✅ GET USERNAME (SAFE)
+    const username = localStorage.getItem("quizUsername") || "Guest";
     const date = new Date();
     const timestamp = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 
     let content = `
 Quiz Results
 -------------------------
+User: ${username}
 Date: ${timestamp}
 Total Questions: ${total}
 Correct: ${correct}
@@ -294,8 +310,27 @@ Correct Answer: ${q.options[q.correct]}
     const link = document.createElement("a");
 
     link.href = URL.createObjectURL(blob);
-    link.download = `quiz_results_${Date.now()}.txt`;
+    link.download = `quiz_results_${username}_${Date.now()}.txt`; // ✅ filename improved
     link.click();
 }
 
+document.addEventListener("DOMContentLoaded", () => {
 
+    const loginButton = document.getElementById("loginButton");
+    const usernameInput = document.getElementById("username");
+    const errorMessage = document.getElementById("error-message");
+
+    if (!loginButton) return; // safety
+
+    loginButton.addEventListener("click", () => {
+        const username = usernameInput.value.trim();
+
+        if (username === "") {
+            errorMessage.style.display = "block";
+            return;
+        }
+
+        startQuiz(username); // ✅ uses correct function
+    });
+
+});
