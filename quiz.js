@@ -326,7 +326,7 @@ Correct Answer: ${q.options[q.correct]}
     const link = document.createElement("a");
 
     link.href = URL.createObjectURL(blob);
-    link.download = `quiz_results_${username}_${timestamp}.txt`; // ✅ filename improved
+    link.download = `Quixls_${username}_${timestamp}.txt`; // ✅ filename improved
     link.click();
 }
 
