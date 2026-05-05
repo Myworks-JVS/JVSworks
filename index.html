@@ -103,14 +103,21 @@ h1 {
         <!-- Disabled by default -->
         <button id="submitButton" class="btn" style="display:none;" disabled onclick="submitQuiz()">Submit</button>
     </div>
-
+   
     <!-- ===== RESULTS ===== -->
     <div id="results-container" class="results-container" style="display:none;">
         <h3>Your Results</h3>
         <div id="results"></div>
-        <button id="saveButton" class="btn" onclick="saveResults()">Save Results</button>
+        
+        <div class="button-group">
+            <button id="saveButton" class="btn" onclick="saveResults()">Save Results</button>
+            
+            <!-- NEW BUTTON -->
+            <button id="downloadScoreBtn" class="download-btn" onclick="downloadUserScore()">
+                Download Username & Score
+            </button>
+        </div>
     </div>
-
 </div>
 
 <footer>
