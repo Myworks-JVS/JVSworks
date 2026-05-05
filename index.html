@@ -14,11 +14,6 @@
 <style>
 .hidden { display: none; }
 
-h1 {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    font-weight: 500;
-    margin: 0.5rem 0;
-}
 </style>
 </head>
 
@@ -33,7 +28,6 @@ h1 {
 <div id="login-container">
     <h1>Login to Start the MCQ exam</h1>
 
-    <label for="username">Username:</label>
     <input type="text" id="username" placeholder="Enter Username" required>
 
     <button id="loginButton" class="btn login-btn">Login</button>
@@ -45,81 +39,86 @@ h1 {
 
 <!-- ================= QUIZ SECTION ================= -->
 <div id="quiz-container" class="quiz-page hidden">
-
+    
     <div style="display:flex; align-items:center; gap:20px;">
         <div id="timer" style="font-size:1rem; color:orange;">00:00:00</div>
-        <h1>This is a progressive MCQ test Select any one option there is no 'back' button</h1>
+        <h1 class="warning-text">
+                This is a progressive MCQ test Select any one option there is no 'back' button
+            </h1>
     </div>
-
+    
     <p id="user-info"></p>
-
+    
     <!-- ===== FILE UPLOAD SECTION ===== -->
     <div class="file-section">
-
-        <label for="fileUpload" class="btn upload-btn">
-            Upload Quiz File
+        
+        <input type="file"
+        id="fileUpload"
+        accept=".xlsx"
+        onchange="loadExcelFile(event)"
+        class="file-upload-input" />
+        <label id="fileLabel" class="file-label">
+            Select valid Excel file to start
         </label>
 
-        <input type="file"
-               id="fileUpload"
-               accept=".xlsx"
-               onchange="loadExcelFile(event)"
-               class="file-upload-input" />
-
+        <button id="startQuizBtn" class="btn start-btn" disabled onclick="beginQuiz()">
+            Start
+        </button>
+        
         <!-- ===== TEMPLATE PREVIEW ===== -->
-        <div class="template-preview-container">
+        <div id="templatePreview"class="template-preview-container">
             <h3>Template Preview</h3>
             <div class="template-preview-frame">
                 <img src="images/excel_template_preview.png"
-                     alt="Template Preview"
-                     class="template-preview-image">
+                    alt="Template Preview"
+                    class="template-preview-image">
             </div>
         </div>
-
+        
         <a id="downloadTemplateBtn"
-           class="btn template-btn"
-           href="https://github.com/sugunakar85/Quixls/releases/download/v1.1/Progressive_MCQ_Template.xlsx"
-           download>
+            class="btn template-btn"
+            href="https://github.com/sugunakar85/Quixls/releases/download/v1.1/Progressive_MCQ_Template.xlsx"
+            download>
             Download Template
         </a>
-
+        
     </div>
     <!-- ===== PROGRESS BAR (NEW) ===== -->
     <div id="progress-wrapper">
         <div id="progress-bar"></div>
     </div>
+    <p id="question-progress" style="font-weight:600; margin-top:8px;"></p>
     <!-- ===== QUESTION AREA ===== -->
     <p id="question-progress" style="font-weight:600; margin-top:10px;"></p>
     <div id="mcq-question-container" class="question-container" style="display:none;">
         <h3 id="question-title" class="question-title"></h3>
         <div id="question-options" class="options-container"></div>
     </div>
-
+    
     <!-- ===== NAV BUTTONS ===== -->
     <div class="button-group">
         <!--  Disabled by default (IMPORTANT CHANGE) -->
         <button id="nextButton" class="btn" style="display:none;" disabled onclick="nextQuestion()">Next</button>
-
+        
         <!-- Disabled by default -->
         <button id="submitButton" class="btn" style="display:none;" disabled onclick="submitQuiz()">Submit</button>
     </div>
-   
+    
     <!-- ===== RESULTS ===== -->
     <div id="results-container" class="results-container" style="display:none;">
         <h3>Your Results</h3>
         <div id="results"></div>
         
         <div class="button-group">
-            <button id="saveButton" class="btn" onclick="saveResults()">Download key</button>
+            <button id="saveButton" class="btn" onclick="saveResults()">Download Key</button>
             
             <!-- NEW BUTTON -->
-            <button id="downloadScoreBtn" class="download-btn" onclick="downloadUserScore()">
+            <button id="downloadScoreBtn" class="btn download-btn" onclick="downloadUserScore()">
                 Download Score
             </button>
         </div>
     </div>
 </div>
-
 <footer>
 <p style="font-size:0.8em; color:#777;">
 © 2026 <strong>JVS Edtek</strong>. All rights reserved.
