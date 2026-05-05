@@ -1,6 +1,7 @@
 // ==============================
 // GLOBAL STATE
 // ==============================
+let isFileValid = false; // ✅ NEW
 let questions = [];
 let currentQuestionIndex = 0;
 let userResponses = [];
@@ -41,7 +42,11 @@ function shuffleArray(array) {
 function loadExcelFile(event) {
     const file = event.target.files[0];
     if (!file) return;
+    // ✅ RESET STATE when a new file is selected
+       isFileValid = false;
 
+       const startBtn = document.getElementById("startQuizBtn");
+       if (startBtn) startBtn.disabled = true;
     const reader = new FileReader();
 
     reader.onload = function (e) {
@@ -63,14 +68,18 @@ function loadExcelFile(event) {
                 alert("No valid questions found in file.");
                 return;
             }
-            // ADD HERE progress bar
-            const progressWrapper = document.getElementById("progress-wrapper");
-            if (progressWrapper) progressWrapper.style.display = "block";
-            document.querySelector(".file-section").style.display = "none";
-            document.getElementById("mcq-question-container").style.display = "block";
-            document.getElementById("nextButton").style.display = "block";
+            // ✅ Mark file as valid
+            isFileValid = true;
 
-            loadQuestion(0);
+            // ✅ Enable Start button
+            const startBtn = document.getElementById("startQuizBtn");
+            if (startBtn) startBtn.disabled = false;
+            document.getElementById("fileLabel").style.display = "none";
+            // Optional UX
+            alert("File loaded successfully. Click 'Start Quiz' to begin.");
+            document.getElementById("templatePreview").style.display = "none";
+            document.getElementById("downloadTemplateBtn").style.display = "none";
+            
 
         } catch (err) {
             console.error(err);
@@ -151,8 +160,11 @@ for (let i = startRow; i < rows.length; i++) {
 // ==============================
 // LOAD QUESTION
 // ==============================
-function loadQuestion(index) {
-    startTimer();
+function loadQuestion(index = currentQuestionIndex) {
+    if (index === undefined || !questions[index]) {
+        console.error("Invalid question index:", index);
+        return;
+    }
 
     const q = questions[index];
 
@@ -234,6 +246,7 @@ function submitQuiz() {
     currentQuestionIndex = questions.length; // ✅ ensures 0 remaining
     updateRemainingCount();
     displayResults();
+    
 }
 // ==============================
 // RESULTS
@@ -251,7 +264,8 @@ function displayResults() {
 
     document.getElementById("mcq-question-container").style.display = "none";
     document.getElementById("submitButton").style.display = "none";
-
+    // ✅ Clear file input after successful load
+    document.getElementById("fileUpload").value = "";
     document.getElementById("results").innerHTML = `
         <p style="color:green;">Correct: ${correct}</p>
         <p style="color:red;">Wrong: ${wrong}</p>
@@ -284,7 +298,26 @@ function updateRemainingCount() {
         barEl.style.width = `${progressPercent}%`;
     }
 }
+function beginQuiz() {
+    if (!isFileValid || questions.length === 0) {
+        alert("Please upload a valid Excel file first.");
+        return;
+    }
 
+    // Hide file section (optional)
+    document.querySelector(".file-section").style.display = "none";
+
+    // Show quiz UI
+    document.getElementById("mcq-question-container").style.display = "block";
+    document.getElementById("nextButton").style.display = "inline-block";
+
+    // Start timer (if exists)
+    if (typeof startTimer === "function") startTimer();
+
+    // Load first question
+    currentQuestionIndex = 0;
+    loadQuestion(0);
+}
 // ==============================
 // SAVE RESULTS
 // ==============================
@@ -335,7 +368,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginButton = document.getElementById("loginButton");
     const usernameInput = document.getElementById("username");
     const errorMessage = document.getElementById("error-message");
-
+    const fileInput = document.getElementById("fileUpload");
+    if (fileInput) fileInput.value = "";
     if (!loginButton) return; // safety
 
     loginButton.addEventListener("click", () => {
@@ -350,7 +384,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
-
 // ==============================
 // DOWNLOAD USERNAME + SCORE (CSV)
 // ==============================
@@ -378,4 +411,3 @@ function downloadUserScore() {
 
     link.click();
 }
-
