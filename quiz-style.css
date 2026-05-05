@@ -11,8 +11,21 @@
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f1f1f9;
-  color: #333;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  color: #1f2933;
+}
+.warning-text {
+  color: #dc2626 !important; /* strong red */
+}
+/* =================================
+   GLASS BASE
+   ================================= */
+
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 /* =================================
@@ -21,114 +34,115 @@ body {
 
 .banner-container {
   width: 100%;
-  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 6px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 8px 0;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .banner-image {
   max-width: 100%;
   max-height: 60px;
-  object-fit: contain;
 }
 
 /* =================================
-   LOGIN CARD
+   CARDS (GLASS + NEUMORPHIC)
    ================================= */
-
-#login-container {
-  max-width: 400px;
-  margin: 30px auto;
-  padding: 24px;
-  background-color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
+h1 {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 500;
+    margin: 0.5rem 0;
+    color: #222; /* ✅ ADD THIS */
 }
 
-input {
-  width: 100%;
-  padding: 9px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* =================================
-   QUIZ CARD
-   ================================= */
-
+#login-container,
 #quiz-container {
   width: 92%;
   max-width: 900px;
   margin: 25px auto;
-  padding: 28px 24px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  padding: 24px;
+
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+
+  /* neumorphism depth */
+  box-shadow:
+    8px 8px 18px rgba(0,0,0,0.08),
+    -6px -6px 14px rgba(255,255,255,0.7);
 }
 
+#login-container {
+  max-width: 400px;
+}
+
+/* =================================
+   INPUTS (SOFT NEUMORPHIC)
+   ================================= */
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+
+  border-radius: 8px;
+  border: none;
+
+  background: #eef2ff;
+
+  box-shadow:
+    inset 3px 3px 6px rgba(0,0,0,0.08),
+    inset -3px -3px 6px rgba(255,255,255,0.7);
+}
 /* =================================
    TIMER
    ================================= */
 
 #timer {
-  font-size: 1rem;
-  color: #d97706;
-  background: #fff4d6;
-  padding: 6px 14px;
+  font-size: 0.95rem;
+  color: #b45309;
+  background: rgba(255, 244, 214, 0.7);
+  padding: 6px 12px;
   border-radius: 8px;
   font-weight: 600;
 }
 
-h1 {
-  color: red;
-}
-
 /* =================================
-   OPTIONS
+   OPTIONS (GLASS INTERACTIVE)
    ================================= */
-
-.options-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-}
 
 .option-row {
   display: grid;
   grid-template-columns: 20px 1fr;
-  align-items: start;
   column-gap: 12px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: #f8f9ff;
-  border: 1px solid #e3e6ff;
+
+  padding: 12px;
+  border-radius: 10px;
+
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    4px 4px 10px rgba(0,0,0,0.06),
+    -3px -3px 8px rgba(255,255,255,0.6);
+
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .option-row:hover {
-  background: #eef1ff;
+  transform: translateY(-2px);
+  box-shadow:
+    6px 6px 14px rgba(0,0,0,0.08),
+    -4px -4px 10px rgba(255,255,255,0.7);
 }
 
-.option-row input[type="radio"] {
-  margin: 2px 0 0 0;
-  transform: scale(1.05);
-  cursor: pointer;
-}
-
-/* ✅ Selected option highlight (NEW) */
 .option-row input[type="radio"]:checked + .option-text {
   font-weight: 600;
   color: #2563eb;
-}
-
-.option-text {
-  line-height: 1.45;
 }
 
 /* =================================
@@ -138,102 +152,123 @@ h1 {
 .file-section {
   margin-top: 12px;
   display: flex;
-  align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
-}
-
-.file-upload-input {
-  display: none;
+  gap: 12px;
 }
 
 .template-preview-container {
   width: 100%;
-  text-align: center;
   padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: #fafafa;
+  border-radius: 10px;
+
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
 }
 
 .template-preview-frame {
   max-width: 460px;
   margin: 0 auto;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  background: white;
-  border: 1px solid #ddd;
 }
 
 .template-preview-image {
   width: 100%;
-  height: auto;
-  display: block;
 }
 
 /* =================================
-   BUTTON SYSTEM
+   BUTTON SYSTEM (GLASS + RIPPLE)
    ================================= */
 
 .btn {
-  display: inline-block;
-  padding: 10px 22px;
-  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 11px 20px;
+  border-radius: 10px;
   border: none;
-  cursor: pointer;
+
   font-size: 15px;
   font-weight: 500;
-  text-align: center;
-  text-decoration: none;
   color: white;
-  transition: all 0.2s ease;
-  min-width: 120px;
+
+  cursor: pointer;
+
+  /* glass gradient */
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+
+  /* neumorphic shadow */
+  box-shadow:
+    5px 5px 12px rgba(0,0,0,0.15),
+    -3px -3px 8px rgba(255,255,255,0.3);
+
+  transition: all 0.25s ease;
 }
 
-/* Active press */
+/* Elevation hover */
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    8px 8px 18px rgba(0,0,0,0.2),
+    -4px -4px 10px rgba(255,255,255,0.3);
+}
+
+/* Press */
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
-/* ✅ DISABLED STATE (IMPORTANT UPDATE) */
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
+/* Ripple effect */
+.btn::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0;
   pointer-events: none;
 }
 
-/* Default Blue Buttons */
-.btn:not(.upload-btn):not(.template-btn) {
-  background: #2563eb;
+.btn:active::after {
+  width: 200%;
+  height: 200%;
+  opacity: 1;
+  transform: scale(1);
+  transition: 0.4s ease;
 }
 
-.btn:not(.upload-btn):not(.template-btn):hover:not(:disabled) {
-  background: #1e40af;
+/* Disabled */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Upload Button */
-.upload-btn {
-  background: #16a34a;
-}
+/* Variants */
 
-.upload-btn:hover:not(:disabled) {
-  background: #15803d;
-}
-
-/* Template Button */
 .template-btn {
-  background: #7c3aed;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
 }
 
-.template-btn:hover:not(:disabled) {
-  background: #5b21b6;
+.download-btn {
+  background: linear-gradient(135deg, #f59e0b, #fb923c);
+  font-weight: 600;
 }
 
-/* Login full width */
+.download-btn::before {
+  content: "⬇️";
+  margin-right: 6px;
+}
+
+/* Full width login */
 .login-btn {
   width: 100%;
-  margin-top: 12px;
 }
 
 /* =================================
@@ -244,8 +279,8 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 14px;
-  margin-top: 20px;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 /* =================================
@@ -258,13 +293,27 @@ h1 {
 }
 
 .results-container h3 {
-  color: #15803d;
-  margin-bottom: 10px;
+  color: #16a34a;
 }
 
-#results {
-  font-size: 17px;
-  margin-bottom: 18px;
+/* =================================
+   PROGRESS BAR (GLASS STYLE)
+   ================================= */
+
+#progress-wrapper {
+  width: 100%;
+  height: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+
+  background: rgba(255,255,255,0.5);
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4CAF50, #2ecc71);
+  transition: width 0.35s ease;
 }
 
 /* =================================
@@ -272,7 +321,6 @@ h1 {
    ================================= */
 
 footer {
-  background-color: #f1f1f1;
   text-align: center;
   padding: 10px;
   font-size: 14px;
@@ -285,46 +333,49 @@ footer {
 
 @media (max-width: 600px) {
   #quiz-container {
-    padding: 20px 16px;
+    padding: 18px;
   }
 
   .btn {
     width: 100%;
   }
-}
-#progress-wrapper {
-    width: 100%;
-    height: 10px;
-    background: #e6e6e6;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 15px;
+
+  .button-group {
+    flex-direction: column;
+  }
 }
 
-#progress-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #4CAF50, #2ecc71);
-    border-radius: 20px;
-    transition: width 0.35s ease-in-out;
-}
+/* Landscape fix */
+@media (max-width: 900px) and (orientation: landscape) {
+  .btn {
+    flex: 1 1 45%;
+    max-width: 220px;
+  }
 
-/* Optional: subtle text styling */
-#question-progress {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
+  .download-btn {
+    flex: 1 1 100%;
+  }
 }
 /* =================================
-   DOWNLOAD SCORE BUTTON (NEW)
+   FILE LABEL (UPLOAD BUTTON STYLE)
    ================================= */
 
-.download-btn {
-  background: #f59e0b; /* amber/orange */
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 11px 18px;
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: red;
+
 }
 
-.download-btn:hover:not(:disabled) {
-  background: #d97706;
+/* Optional icon */
+.file-label::before {
+  content: "📁";
+  margin-right: 6px;
 }
-
-
