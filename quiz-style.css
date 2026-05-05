@@ -315,4 +315,16 @@ footer {
     color: #555;
     margin-bottom: 10px;
 }
+/* =================================
+   DOWNLOAD SCORE BUTTON (NEW)
+   ================================= */
+
+.download-btn {
+  background: #f59e0b; /* amber/orange */
+}
+
+.download-btn:hover:not(:disabled) {
+  background: #d97706;
+}
+
 
