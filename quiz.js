@@ -350,3 +350,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+// ==============================
+// DOWNLOAD USERNAME + SCORE (CSV)
+// ==============================
+function downloadUserScore() {
+
+    const total = questions.length;
+
+    const correct = userResponses.filter(
+        (ans, i) => ans === questions[i].correct
+    ).length;
+
+    const percentage = ((correct / total) * 100).toFixed(2);
+
+    const username = localStorage.getItem("quizUsername") || "Guest";
+
+    // CSV format (simple & clean)
+    let csvContent = "Username,Score (%)\n";
+    csvContent += `${username},${percentage}\n`;
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+    link.download = `Score_${username}.csv`;
+
+    link.click();
+}
+
