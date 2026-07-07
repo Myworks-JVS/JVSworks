@@ -197,7 +197,7 @@ function loadQuestion(index = currentQuestionIndex) {
     //  BUTTON CONTROL (NEW)
     const nextBtn = document.getElementById("nextButton");
     const submitBtn = document.getElementById("submitButton");
-
+    const prevBtn = document.getElementById("previousButton");
     // Disable both initially
     nextBtn.disabled = true;
     submitBtn.disabled = true;
@@ -213,10 +213,12 @@ function loadQuestion(index = currentQuestionIndex) {
         input.addEventListener("change", () => {
             nextBtn.disabled = false;
             submitBtn.disabled = false;
+            prevBtn.disabled = false;
         });
     });
-
     // Existing visibility logic
+    prevBtn.style.display =
+        index > 0 ? "inline-block" : "none";
     submitBtn.style.display =
         index === questions.length - 1 ? "block" : "none";
 
@@ -228,25 +230,49 @@ function loadQuestion(index = currentQuestionIndex) {
 // NEXT
 // ==============================
 function nextQuestion() {
-    const selected = document.querySelector('input[name="question"]:checked');
-    if (!selected) return; // ✅ safety
-    userResponses[currentQuestionIndex] = Number(selected.value);
-    currentQuestionIndex++;
-    updateRemainingCount(); // ✅ update immediately on click
-    loadQuestion(currentQuestionIndex);
-}
 
+    const selected = document.querySelector('input[name="question"]:checked');
+    if (!selected) return;
+
+    userResponses[currentQuestionIndex] = Number(selected.value);
+
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        updateRemainingCount();
+        loadQuestion(currentQuestionIndex);
+    }
+}
+// ==============================
+// PREVIOUS
+// ==============================
+function previousQuestion() {
+
+    // Save current answer (if any)
+    const selected = document.querySelector('input[name="question"]:checked');
+    if (selected) {
+        userResponses[currentQuestionIndex] = Number(selected.value);
+    }
+
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        updateRemainingCount();
+        loadQuestion(currentQuestionIndex);
+    }
+}
 // ==============================
 // SUBMIT
 // ==============================
 function submitQuiz() {
+
     const selected = document.querySelector('input[name="question"]:checked');
-    if (!selected) return; // ✅ safety
-    userResponses[currentQuestionIndex] = Number(selected.value);
-    currentQuestionIndex = questions.length; // ✅ ensures 0 remaining
+    if (selected) {
+        userResponses[currentQuestionIndex] = Number(selected.value);
+    }
+
+    currentQuestionIndex = questions.length;
     updateRemainingCount();
+
     displayResults();
-    
 }
 // ==============================
 // RESULTS
@@ -264,6 +290,7 @@ function displayResults() {
 
     document.getElementById("mcq-question-container").style.display = "none";
     document.getElementById("submitButton").style.display = "none";
+   document.getElementById("previousButton").style.display = "none";
     // ✅ Clear file input after successful load
     document.getElementById("fileUpload").value = "";
     document.getElementById("results").innerHTML = `
