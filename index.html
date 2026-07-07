@@ -43,7 +43,7 @@
     <div style="display:flex; align-items:center; gap:20px;">
         <div id="timer" style="font-size:1rem; color:orange;">00:00:00</div>
         <h1 class="warning-text">
-                This is a progressive MCQ test Select any one option there is no 'back' button
+            Welcome to Quixls, Excel to Exam
             </h1>
     </div>
     
@@ -98,6 +98,13 @@
     <!-- ===== NAV BUTTONS ===== -->
     <div class="button-group">
         <!--  Disabled by default (IMPORTANT CHANGE) -->
+        <button
+            id="previousButton"
+            class="btn previous-btn"
+            style="display:none;"
+            onclick="previousQuestion()">
+            Previous
+        </button>
         <button id="nextButton" class="btn" style="display:none;" disabled onclick="nextQuestion()">Next</button>
         
         <!-- Disabled by default -->
