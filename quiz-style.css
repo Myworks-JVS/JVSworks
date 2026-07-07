@@ -270,7 +270,23 @@ input {
 .login-btn {
   width: 100%;
 }
+/* =================================
+   PREVIOUS BUTTON
+   ================================= */
 
+.previous-btn {
+  background: linear-gradient(135deg, #64748b, #94a3b8);
+}
+
+.previous-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #475569, #64748b);
+}
+
+.previous-btn::before {
+  content: "←";
+  margin-right: 6px;
+  font-weight: 700;
+}
 /* =================================
    BUTTON GROUP
    ================================= */
